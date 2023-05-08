@@ -19,7 +19,8 @@ config :organaki_api, OrganakiApiWeb.Endpoint,
     layout: false
   ],
   pubsub_server: OrganakiApi.PubSub,
-  live_view: [signing_salt: "gG6me2Jx"]
+  live_view: [signing_salt: "gG6me2Jx"],
+  server: true
 
 # Configures the mailer
 #
