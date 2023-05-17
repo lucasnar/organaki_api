@@ -17,8 +17,12 @@ of organic food directly with consumers.
 To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
-  * Run `docker-compose up` to start services at their default port
+  * Run `docker-compose up` to start database services at their default port
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+
+To start your Phoenix server using docker-compose:
+
+  * Run `docker-compose --profile organaki-server up`
 
 Now you can make requests to [`localhost:4000`](http://localhost:4000).
 

@@ -12,6 +12,8 @@ services:
 
   organaki-api:
     image: elixir:1.14.2
+    profiles:
+       - organaki-server
     ports: 
       - "4000:4000"
     volumes:
