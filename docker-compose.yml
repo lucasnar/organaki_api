@@ -9,3 +9,16 @@ services:
       POSTGRES_PASSWORD: "postgres"
     ports:
       - "5432:5432"
+
+  organaki-api:
+    image: elixir:1.14.2
+    profiles:
+       - organaki-server
+    ports: 
+      - "4000:4000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: make start-organaki
+    depends_on:
+      - postgres
