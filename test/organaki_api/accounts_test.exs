@@ -8,7 +8,14 @@ defmodule OrganakiApi.AccountsTest do
 
     import OrganakiApi.AccountsFixtures
 
-    @invalid_attrs %{email: nil, is_producer: nil, lat: nil, lng: nil, name: nil, short_description: nil}
+    @invalid_attrs %{
+      email: nil,
+      is_producer: nil,
+      lat: nil,
+      lng: nil,
+      name: nil,
+      short_description: nil
+    }
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -21,7 +28,14 @@ defmodule OrganakiApi.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{email: "some email", is_producer: true, lat: 120.5, lng: 120.5, name: "some name", short_description: "some short_description"}
+      valid_attrs = %{
+        email: "some email",
+        is_producer: true,
+        lat: 120.5,
+        lng: 120.5,
+        name: "some name",
+        short_description: "some short_description"
+      }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.email == "some email"
@@ -38,7 +52,15 @@ defmodule OrganakiApi.AccountsTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{email: "some updated email", is_producer: false, lat: 456.7, lng: 456.7, name: "some updated name", short_description: "some updated short_description"}
+
+      update_attrs = %{
+        email: "some updated email",
+        is_producer: false,
+        lat: 456.7,
+        lng: 456.7,
+        name: "some updated name",
+        short_description: "some updated short_description"
+      }
 
       assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
       assert user.email == "some updated email"
