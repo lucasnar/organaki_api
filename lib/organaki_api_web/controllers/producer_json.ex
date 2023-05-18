@@ -17,7 +17,11 @@ defmodule OrganakiApiWeb.ProducerJSON do
 
   defp render_producer(%User{} = producer) do
     %{
-      id: producer.id
+      id: producer.id,
+      name: producer.name,
+      email: producer.email,
+      visible_producer: producer.visible_producer,
+      short_description: producer.short_description
     }
   end
 end
