@@ -10,7 +10,7 @@ defmodule OrganakiApi.Producers do
   alias OrganakiApi.Accounts.User
 
   @doc """
-  Returns the list of users who are producers.
+  Returns the list of users who are visible producers.
 
   ## Examples
 
@@ -19,7 +19,7 @@ defmodule OrganakiApi.Producers do
 
   """
   def list_producers do
-    Repo.all(from u in User, where: u.is_producer == true)
+    Repo.all(from u in User, where: u.is_producer == true and u.visible_producer == true)
   end
 
   @doc """

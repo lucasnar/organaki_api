@@ -33,12 +33,16 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
   end
 
   describe "index" do
-    test "lists all producers", %{conn: conn} do
+    test "lists all visible producers", %{conn: conn} do
       conn = get(conn, ~p"/api/producers")
       assert json_response(conn, 200)["producers"] == []
 
       for _ <- 1..10 do
-        create_producer()
+        producer_fixture()
+      end
+
+      for _ <- 1..10 do
+        producer_fixture(%{"visible_producer" => true})
       end
 
       response =
@@ -103,9 +107,7 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
     end
   end
 
-  defp create_producer(_), do: create_producer()
-
-  defp create_producer() do
+  defp create_producer(_test_data) do
     producer = producer_fixture()
     %{producer: producer}
   end

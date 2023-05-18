@@ -9,14 +9,15 @@ defmodule OrganakiApi.ProducersFixtures do
   """
   def producer_fixture(attrs \\ %{}) do
     {:ok, producer} =
-      attrs
-      |> Enum.into(%{
+      %{
         "email" => "some email",
         "lat" => 120.5,
         "lng" => 120.5,
         "name" => "some name",
-        "short_description" => "some short_description"
-      })
+        "short_description" => "some short_description",
+        "visible_producer" => false
+      }
+      |> Map.merge(attrs)
       |> OrganakiApi.Producers.create_producer()
 
     producer

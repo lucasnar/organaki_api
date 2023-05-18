@@ -15,8 +15,8 @@ defmodule OrganakiApi.ProducersTest do
       "short_description" => "any short_description"
     }
 
-    test "list_producers/0 returns all users" do
-      producer = producer_fixture()
+    test "list_producers/0 returns all visible producers" do
+      producer = producer_fixture(%{"visible_producer" => true})
       assert Producers.list_producers() == [producer]
     end
 
