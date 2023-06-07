@@ -7,6 +7,8 @@ defmodule OrganakiApiWeb.Router do
 
   scope "/api", OrganakiApiWeb do
     pipe_through :api
+
+    resources "/producers", ProducerController
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

@@ -5,6 +5,7 @@ defmodule OrganakiApi.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
+    field :visible_producer, :boolean, default: false
     field :email, :string
     field :is_producer, :boolean, default: false
     field :lat, :float
@@ -18,7 +19,15 @@ defmodule OrganakiApi.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :short_description, :lat, :lng, :is_producer])
+    |> cast(attrs, [
+      :name,
+      :email,
+      :short_description,
+      :lat,
+      :lng,
+      :is_producer,
+      :visible_producer
+    ])
     |> validate_required([:name, :email, :short_description, :lat, :lng, :is_producer])
   end
 end
