@@ -4,7 +4,7 @@ defmodule OrganakiApi.Repo.Migrations.CreateUserTags do
   def change do
     create table(:user_tags, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :user_id, references(:user, on_delete: :nothing, type: :binary_id)
+      add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
       add :tag_id, references(:tags, on_delete: :nothing, type: :binary_id)
 
       timestamps()
