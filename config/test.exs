@@ -20,8 +20,15 @@ config :organaki_api, OrganakiApiWeb.Endpoint,
   secret_key_base: "x5nscUfd9oO1OtLCWCv5luZkvfDADivOxhQ53PXCMroqj+9vX+cPwywpWGNT7pbf",
   server: false
 
+config :organaki_api, OrganakiApi.Accounts.Guardian,
+  issuer: "organaki_api",
+  secret_key: "x5nscUfd9oO1OtLCWCv5luZkvfDADivOxhQ53PXCMroqj+9vX+cPwywpWGNT7pbf"
+
 # In test we don't send emails.
 config :organaki_api, OrganakiApi.Mailer, adapter: Swoosh.Adapters.Test
+
+# From bcrypt's docs: Optional: during tests (and tests only), you may want to reduce the number of rounds so it does not slow down your test suite. If you have a config/test.exs, you should add:
+config :bcrypt_elixir, :log_rounds, 4
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
