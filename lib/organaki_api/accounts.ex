@@ -9,6 +9,25 @@ defmodule OrganakiApi.Accounts do
   alias OrganakiApi.Accounts.User
 
   @doc """
+  Validate user credentials.
+  """
+  def authenticate_user(email, plain_text_password) do
+    query = from(u in User, where: u.email == ^email)
+
+    case Repo.one(query) do
+      nil ->
+        {:error, :invalid_credentials}
+
+      user ->
+        if Bcrypt.verify_pass(plain_text_password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_credentials}
+        end
+    end
+  end
+
+  @doc """
   Returns the list of users.
 
   ## Examples

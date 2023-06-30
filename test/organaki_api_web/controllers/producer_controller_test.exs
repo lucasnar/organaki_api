@@ -3,24 +3,27 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
 
   import OrganakiApi.ProducersFixtures
 
-  alias OrganakiApi.Accounts.User
+  alias OrganakiApi.Accounts.{Guardian, User}
 
   @create_attrs %{
     email: "some@email",
     lat: 120.5,
     lng: 120.5,
     name: "some name",
-    short_description: "some short_description"
+    short_description: "some short_description",
+    password: "some password"
   }
+
   @update_attrs %{
     email: "any@email",
     lat: 120.6,
     lng: 120.4,
     name: "any name",
-    short_description: "any short_description"
+    short_description: "any short_description",
+    password: "any password"
   }
 
-  # missing the required name field, and wrong format for lat
+  # missing the required name field, password, and wrong format for lat
   @invalid_attrs %{
     email: "any@email",
     lat: "a120.6",
@@ -37,12 +40,12 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
       conn = get(conn, ~p"/api/producers")
       assert json_response(conn, 200)["producers"] == []
 
-      for _ <- 1..10 do
-        producer_fixture()
+      for n <- 1..10 do
+        producer_fixture(%{"email" => "#{n}@email"})
       end
 
-      for _ <- 1..10 do
-        producer_fixture(%{"visible_producer" => true})
+      for n <- 11..20 do
+        producer_fixture(%{"visible_producer" => true, "email" => "#{n}@email"})
       end
 
       response =
@@ -71,7 +74,8 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
 
       assert json_response(conn, 422)["errors"] == %{
                "lat" => ["is invalid"],
-               "name" => ["can't be blank"]
+               "name" => ["can't be blank"],
+               "password" => ["can't be blank"]
              }
     end
   end
@@ -79,8 +83,14 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
   describe "update producer" do
     setup [:create_producer]
 
-    test "renders producer when data is valid", %{conn: conn, producer: %User{id: id}} do
-      conn = put(conn, ~p"/api/producers/#{id}", producer: @update_attrs)
+    test "renders producer when data is valid", %{conn: conn, producer: %User{id: id} = user} do
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> put(~p"/api/producers/#{id}", producer: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["producer"]
 
       conn = get(conn, ~p"/api/producers/#{id}")
@@ -90,20 +100,49 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
              } = json_response(conn, 200)["producer"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, producer: %User{id: id}} do
-      conn = put(conn, ~p"/api/producers/#{id}", producer: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] == %{"lat" => ["is invalid"]}
+    test "renders 401 when user is unauthorized", %{conn: conn, producer: %User{id: id}} do
+      # No authorization header
+      conn = put(conn, ~p"/api/producers/#{id}", producer: @update_attrs)
+
+      assert json_response(conn, 401)
+    end
+
+    test "renders errors when data is invalid", %{conn: conn, producer: %User{id: id} = user} do
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> put(~p"/api/producers/#{id}", producer: @invalid_attrs)
+
+      assert json_response(conn, 422)["errors"] == %{
+               "lat" => ["is invalid"],
+               "password" => ["can't be blank"]
+             }
     end
   end
 
   describe "delete producer" do
     setup [:create_producer]
 
-    test "deletes chosen producer", %{conn: conn, producer: %User{id: id}} do
-      conn = delete(conn, ~p"/api/producers/#{id}")
+    test "deletes chosen producer", %{conn: conn, producer: %User{id: id} = user} do
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> delete(~p"/api/producers/#{id}")
+
       assert response(conn, 204)
 
       assert response(get(conn, ~p"/api/producers/#{id}"), 404)
+    end
+
+    test "renders 401 when user is unauthorized", %{conn: conn, producer: %User{id: id}} do
+      # No authorization header
+      conn = delete(conn, ~p"/api/producers/#{id}")
+
+      assert json_response(conn, 401)
     end
   end
 

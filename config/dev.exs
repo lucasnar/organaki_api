@@ -26,6 +26,10 @@ config :organaki_api, OrganakiApiWeb.Endpoint,
   secret_key_base: "GJY3eqXbvjnCEa/KrCrjKjwhvQTjwq3FSra49mDrx2PHOaXkSJcCbipcEaaXOKf2",
   watchers: []
 
+config :organaki_api, OrganakiApi.Accounts.Guardian,
+  issuer: "organaki_api",
+  secret_key: "GJY3eqXbvjnCEa/KrCrjKjwhvQTjwq3FSra49mDrx2PHOaXkSJcCbipcEaaXOKf2"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

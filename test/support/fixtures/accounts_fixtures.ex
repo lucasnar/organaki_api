@@ -16,7 +16,8 @@ defmodule OrganakiApi.AccountsFixtures do
         lat: 120.5,
         lng: 120.5,
         name: "some name",
-        short_description: "some short_description"
+        short_description: "some short_description",
+        password: "some password"
       })
       |> OrganakiApi.Accounts.create_user()
 

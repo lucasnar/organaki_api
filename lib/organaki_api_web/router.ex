@@ -5,10 +5,26 @@ defmodule OrganakiApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", OrganakiApiWeb do
-    pipe_through :api
+  pipeline :auth do
+    plug OrganakiApi.Accounts.Pipeline
+  end
 
-    resources "/producers", ProducerController
+  pipeline :ensure_auth do
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
+  scope "/api", OrganakiApiWeb do
+    pipe_through [:api, :auth]
+
+    resources "/producers", ProducerController, only: [:index, :create, :show]
+    post "/login", SessionController, :login
+    get "/logout", SessionController, :logout
+  end
+
+  scope "/api", OrganakiApiWeb do
+    pipe_through [:api, :auth, :ensure_auth]
+
+    resources "/producers", ProducerController, only: [:update, :delete]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

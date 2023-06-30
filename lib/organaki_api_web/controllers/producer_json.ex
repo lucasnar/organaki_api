@@ -11,8 +11,18 @@ defmodule OrganakiApiWeb.ProducerJSON do
   @doc """
   Renders a single producer.
   """
+  def show(%{producer: producer, token: token}) do
+    %{producer: render_producer(producer, token)}
+  end
+
   def show(%{producer: producer}) do
     %{producer: render_producer(producer)}
+  end
+
+  defp render_producer(%User{} = producer, token) do
+    producer
+    |> render_producer()
+    |> Map.put(:token, token)
   end
 
   defp render_producer(%User{} = producer) do

@@ -31,4 +31,11 @@ defmodule OrganakiApiWeb.FallbackController do
     |> put_view(json: OrganakiApiWeb.ErrorJSON)
     |> render(:"422")
   end
+
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> put_view(json: OrganakiApiWeb.ErrorJSON)
+    |> render(:"401")
+  end
 end
