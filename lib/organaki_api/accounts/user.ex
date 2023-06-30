@@ -14,6 +14,12 @@ defmodule OrganakiApi.Accounts.User do
     field :short_description, :string
     field :password_hash, :string
     field :password, :string, virtual: true
+    field :address, :string
+    field :contact, :string
+    field :opening_hours, :string
+    field :advertisement, :string
+    field :organic_seal, :boolean, default: false
+    field :seal_number, :string
 
     timestamps()
   end
@@ -29,9 +35,15 @@ defmodule OrganakiApi.Accounts.User do
       :lng,
       :is_producer,
       :visible_producer,
-      :password
+      :password,
+      :address,
+      :contact,
+      :opening_hours,
+      :advertisement,
+      :organic_seal,
+      :seal_number
     ])
-    |> validate_required([:name, :email, :password, :short_description, :lat, :lng, :is_producer])
+    |> validate_required([:name, :email, :password, :short_description, :lat, :lng, :is_producer, :address])
     |> unique_constraint(:email)
     |> password_hash()
   end

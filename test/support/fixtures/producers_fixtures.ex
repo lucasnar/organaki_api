@@ -16,7 +16,13 @@ defmodule OrganakiApi.ProducersFixtures do
         "name" => "some name",
         "short_description" => "some short_description",
         "visible_producer" => false,
-        "password" => "some password"
+        "password" => "some password",
+        "address" => "some address",
+        "contact" => "some contact",
+        "opening_hours" => "some opening_hours",
+        "advertisement" => "some advertisement",
+        "organic_seal" => true,
+        "seal_number" => "some seal_number"
       }
       |> Map.merge(attrs)
       |> OrganakiApi.Producers.create_producer()

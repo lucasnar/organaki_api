@@ -31,7 +31,13 @@ defmodule OrganakiApiWeb.ProducerJSON do
       name: producer.name,
       email: producer.email,
       visible_producer: producer.visible_producer,
-      short_description: producer.short_description
+      short_description: producer.short_description,
+      address: producer.address,
+      contact: producer.contact,
+      opening_hours: producer.opening_hours,
+      advertisement: producer.advertisement,
+      organic_seal: producer.organic_seal,
+      seal_number: producer.seal_number
     }
   end
 end

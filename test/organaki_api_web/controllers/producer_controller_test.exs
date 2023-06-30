@@ -11,7 +11,8 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
     lng: 120.5,
     name: "some name",
     short_description: "some short_description",
-    password: "some password"
+    password: "some password",
+    address: "some address"
   }
 
   @update_attrs %{
@@ -75,7 +76,8 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
       assert json_response(conn, 422)["errors"] == %{
                "lat" => ["is invalid"],
                "name" => ["can't be blank"],
-               "password" => ["can't be blank"]
+               "password" => ["can't be blank"],
+               "address" => ["can't be blank"]
              }
     end
   end

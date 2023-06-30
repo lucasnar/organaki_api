@@ -36,7 +36,8 @@ defmodule OrganakiApi.AccountsTest do
         lng: 120.5,
         name: "some name",
         short_description: "some short_description",
-        password: "some password"
+        password: "some password",
+        address: "some address"
       }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
@@ -47,6 +48,7 @@ defmodule OrganakiApi.AccountsTest do
       assert user.name == "some name"
       assert user.short_description == "some short_description"
       assert user.password == "some password"
+      assert user.address == "some address"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
