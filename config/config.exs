@@ -22,6 +22,11 @@ config :organaki_api, OrganakiApiWeb.Endpoint,
   live_view: [signing_salt: "gG6me2Jx"],
   server: true
 
+config :organaki_api, OrganakiApi.Accounts.Guardian,
+  issuer: "organaki_api",
+  secret_key: System.get_env("SECRET_KEY_BASE"),
+  ttl: { 30, :days }
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

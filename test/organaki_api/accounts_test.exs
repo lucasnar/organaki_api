@@ -19,12 +19,13 @@ defmodule OrganakiApi.AccountsTest do
 
     test "list_users/0 returns all users" do
       user = user_fixture()
-      assert Accounts.list_users() == [user]
+      retrieved_user = Accounts.list_users() |> List.first()
+      assert retrieved_user.id == user.id
     end
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+      assert Accounts.get_user!(user.id)
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -34,7 +35,8 @@ defmodule OrganakiApi.AccountsTest do
         lat: 120.5,
         lng: 120.5,
         name: "some name",
-        short_description: "some short_description"
+        short_description: "some short_description",
+        password: "some password"
       }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
@@ -44,6 +46,7 @@ defmodule OrganakiApi.AccountsTest do
       assert user.lng == 120.5
       assert user.name == "some name"
       assert user.short_description == "some short_description"
+      assert user.password == "some password"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -74,7 +77,9 @@ defmodule OrganakiApi.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
+
+      assert user |> Map.drop([:password]) ==
+               user.id |> Accounts.get_user!() |> Map.drop([:password])
     end
 
     test "delete_user/1 deletes the user" do

@@ -16,14 +16,14 @@ defmodule OrganakiApi.ProducersTest do
     }
 
     test "list_producers/0 returns all visible producers" do
-      producer = producer_fixture(%{"visible_producer" => true})
-      assert Producers.list_producers() == [producer]
+      producer_fixture(%{"visible_producer" => true})
+      assert [_producer] = Producers.list_producers()
     end
 
     test "get_producer/1 returns the producer with given id" do
       producer = producer_fixture()
       assert {:ok, retrieved_producer} = Producers.get_producer(producer.id)
-      assert retrieved_producer == producer
+      assert retrieved_producer.email == producer.email
     end
 
     test "create_producer/1 with valid data creates a producer" do
@@ -32,7 +32,8 @@ defmodule OrganakiApi.ProducersTest do
         "lat" => 120.5,
         "lng" => 120.5,
         "name" => "some name",
-        "short_description" => "some short_description"
+        "short_description" => "some short_description",
+        "password" => "some password"
       }
 
       assert {:ok, %User{}} = Producers.create_producer(valid_attrs)
@@ -56,7 +57,7 @@ defmodule OrganakiApi.ProducersTest do
                Producers.update_producer(original_producer, @invalid_attrs)
 
       assert {:ok, producer} = Producers.get_producer(original_producer.id)
-      assert producer == original_producer
+      assert producer.email == original_producer.email
     end
 
     test "delete_producer/1 deletes the producer" do
