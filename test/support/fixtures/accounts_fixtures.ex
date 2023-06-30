@@ -17,7 +17,8 @@ defmodule OrganakiApi.AccountsFixtures do
         lng: 120.5,
         name: "some name",
         short_description: "some short_description",
-        password: "some password"
+        password: "some password",
+        address: "some address"
       })
       |> OrganakiApi.Accounts.create_user()
 

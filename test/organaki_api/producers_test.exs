@@ -33,7 +33,8 @@ defmodule OrganakiApi.ProducersTest do
         "lng" => 120.5,
         "name" => "some name",
         "short_description" => "some short_description",
-        "password" => "some password"
+        "password" => "some password",
+        "address" => "some address"
       }
 
       assert {:ok, %User{}} = Producers.create_producer(valid_attrs)
