@@ -4,6 +4,7 @@ defmodule OrganakiApi.Tags do
   """
 
   import Ecto.Query, warn: false
+
   alias OrganakiApi.Repo
 
   alias OrganakiApi.Tags.Tag
@@ -36,6 +37,32 @@ defmodule OrganakiApi.Tags do
 
   """
   def get_tag!(id), do: Repo.get!(Tag, id)
+
+  @doc """
+  Gets tags by name.
+
+  Returns {:error, :unprocessable_entity} if the tags don't exist.
+
+  ## Examples
+
+      iex> get_tags_by_name([123])
+      {:ok, [%Tag{}]}
+
+      iex> get_tags_by_name([123, 456])
+      {:error, :unprocessable_entity}
+
+  """
+  def get_tags_by_name(tag_names) do
+    query = from t in Tag, where: t.name in ^tag_names
+
+    case Repo.all(query) do
+      tags when length(tags) == length(tag_names) ->
+        {:ok, tags}
+
+      _ ->
+        {:error, :unprocessable_entity}
+    end
+  end
 
   @doc """
   Creates a tag.
@@ -131,7 +158,11 @@ defmodule OrganakiApi.Tags do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_tag!(id), do: Repo.get!(UserTag, id)
+  def get_user_tag!(user_id, tag_id) do
+    query = from ut in UserTag, where: ut.user_id == ^user_id and ut.tag_id == ^tag_id
+
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a user_tag.

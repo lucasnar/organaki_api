@@ -21,32 +21,36 @@ defmodule OrganakiApi.Accounts.User do
     field :organic_seal, :boolean, default: false
     field :seal_number, :string
 
+    many_to_many :tags,
+                 OrganakiApi.Tags.Tag,
+                 join_through: "user_tags",
+                 on_replace: :delete
+
     timestamps()
   end
+
+  @required_fields ~w(name email lat lng short_description is_producer)a
+
+  @optional_fields ~w(address advertisement contact opening_hours organic_seal password seal_number visible_producer)a
+
+  @all_fields @required_fields ++ @optional_fields
 
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [
-      :name,
-      :email,
-      :short_description,
-      :lat,
-      :lng,
-      :is_producer,
-      :visible_producer,
-      :password,
-      :address,
-      :contact,
-      :opening_hours,
-      :advertisement,
-      :organic_seal,
-      :seal_number
-    ])
-    |> validate_required([:name, :email, :password, :short_description, :lat, :lng, :is_producer, :address])
+    |> cast(attrs, @all_fields)
+    |> validate_required(@required_fields)
+    |> maybe_put_assoc(attrs)
     |> unique_constraint(:email)
     |> password_hash()
   end
+
+  @doc false
+  defp maybe_put_assoc(changeset, %{tags: tags}), do: put_assoc(changeset, :tags, tags)
+
+  defp maybe_put_assoc(changeset, %{"tags" => tags}), do: put_assoc(changeset, :tags, tags)
+
+  defp maybe_put_assoc(changeset, _), do: changeset
 
   @doc false
   defp password_hash(changeset) do

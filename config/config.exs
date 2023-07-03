@@ -25,7 +25,7 @@ config :organaki_api, OrganakiApiWeb.Endpoint,
 config :organaki_api, OrganakiApi.Accounts.Guardian,
   issuer: "organaki_api",
   secret_key: System.get_env("SECRET_KEY_BASE"),
-  ttl: { 30, :days }
+  ttl: {30, :days}
 
 # Configures the mailer
 #

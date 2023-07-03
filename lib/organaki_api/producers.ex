@@ -19,7 +19,9 @@ defmodule OrganakiApi.Producers do
 
   """
   def list_producers do
-    Repo.all(from u in User, where: u.is_producer == true and u.visible_producer == true)
+    Repo.all(
+      from u in User, where: u.is_producer == true and u.visible_producer == true, preload: :tags
+    )
   end
 
   @doc """
@@ -58,11 +60,24 @@ defmodule OrganakiApi.Producers do
       {:error, ...}
 
   """
-  def create_producer(attrs \\ %{}) do
+  def create_producer(attrs) do
     try do
       attrs
       |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
       |> Map.new()
+      |> Map.put(:is_producer, true)
+      |> Accounts.create_user()
+    rescue
+      _e in ArgumentError -> {:error, :unprocessable_entity}
+    end
+  end
+
+  def create_producer(attrs, tags) do
+    try do
+      attrs
+      |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
+      |> Map.new()
+      |> Map.put(:tags, tags)
       |> Map.put(:is_producer, true)
       |> Accounts.create_user()
     rescue
@@ -87,6 +102,16 @@ defmodule OrganakiApi.Producers do
     Accounts.update_user(producer, attrs)
   end
 
+  def update_producer(%User{is_producer: true} = producer, attrs, tags) do
+    attrs = Map.merge(attrs, %{"tags" => tags})
+
+    Accounts.update_user(producer, attrs)
+  end
+
+  def update_producer(_, _, _) do
+    {:error, :unprocessable_entity}
+  end
+
   @doc """
   Deletes a producer.
   TODO: update this doc.
@@ -102,5 +127,9 @@ defmodule OrganakiApi.Producers do
   """
   def delete_producer(%User{is_producer: true} = producer) do
     Accounts.delete_user(producer)
+  end
+
+  def preload_tags(%User{is_producer: true} = producer) do
+    Repo.preload(producer, :tags)
   end
 end

@@ -37,7 +37,8 @@ defmodule OrganakiApiWeb.ProducerJSON do
       opening_hours: producer.opening_hours,
       advertisement: producer.advertisement,
       organic_seal: producer.organic_seal,
-      seal_number: producer.seal_number
+      seal_number: producer.seal_number,
+      tags: for(tag <- producer.tags, do: tag.name)
     }
   end
 end
