@@ -17,6 +17,7 @@ defmodule OrganakiApiWeb.Router do
     pipe_through [:api, :auth]
 
     resources "/producers", ProducerController, only: [:index, :create, :show]
+    resources "/tags", TagController, only: [:index]
     post "/login", SessionController, :login
     get "/logout", SessionController, :logout
   end

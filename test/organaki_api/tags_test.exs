@@ -61,23 +61,27 @@ defmodule OrganakiApi.TagsTest do
     alias OrganakiApi.Tags.UserTag
 
     import OrganakiApi.TagsFixtures
+    import OrganakiApi.AccountsFixtures
 
-    @invalid_attrs %{}
+    @invalid_attrs %{user_id: 1}
 
     test "list_user_tags/0 returns all user_tags" do
       user_tag = user_tag_fixture()
       assert Tags.list_user_tags() == [user_tag]
     end
 
-    test "get_user_tag!/1 returns the user_tag with given id" do
+    test "get_user_tag!/1 returns the user_tag with given user_id and tag_id pair" do
       user_tag = user_tag_fixture()
-      assert Tags.get_user_tag!(user_tag.id) == user_tag
+      assert Tags.get_user_tag!(user_tag.user_id, user_tag.tag_id) == user_tag
     end
 
     test "create_user_tag/1 with valid data creates a user_tag" do
-      valid_attrs = %{}
+      user = user_fixture()
+      tag = tag_fixture()
 
-      assert {:ok, %UserTag{} = user_tag} = Tags.create_user_tag(valid_attrs)
+      valid_attrs = %{user_id: user.id, tag_id: tag.id}
+
+      assert {:ok, %UserTag{}} = Tags.create_user_tag(valid_attrs)
     end
 
     test "create_user_tag/1 with invalid data returns error changeset" do
@@ -88,19 +92,22 @@ defmodule OrganakiApi.TagsTest do
       user_tag = user_tag_fixture()
       update_attrs = %{}
 
-      assert {:ok, %UserTag{} = user_tag} = Tags.update_user_tag(user_tag, update_attrs)
+      assert {:ok, %UserTag{}} = Tags.update_user_tag(user_tag, update_attrs)
     end
 
     test "update_user_tag/2 with invalid data returns error changeset" do
       user_tag = user_tag_fixture()
       assert {:error, %Ecto.Changeset{}} = Tags.update_user_tag(user_tag, @invalid_attrs)
-      assert user_tag == Tags.get_user_tag!(user_tag.id)
+      assert user_tag == Tags.get_user_tag!(user_tag.user_id, user_tag.tag_id)
     end
 
     test "delete_user_tag/1 deletes the user_tag" do
       user_tag = user_tag_fixture()
       assert {:ok, %UserTag{}} = Tags.delete_user_tag(user_tag)
-      assert_raise Ecto.NoResultsError, fn -> Tags.get_user_tag!(user_tag.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Tags.get_user_tag!(user_tag.user_id, user_tag.tag_id)
+      end
     end
 
     test "change_user_tag/1 returns a user_tag changeset" do

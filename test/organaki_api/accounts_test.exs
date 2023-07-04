@@ -80,8 +80,8 @@ defmodule OrganakiApi.AccountsTest do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
 
-      assert user |> Map.drop([:password]) ==
-               user.id |> Accounts.get_user!() |> Map.drop([:password])
+      assert user |> Map.drop([:password, :tags]) ==
+               user.id |> Accounts.get_user!() |> Map.drop([:password, :tags])
     end
 
     test "delete_user/1 deletes the user" do

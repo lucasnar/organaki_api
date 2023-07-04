@@ -2,6 +2,7 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
   use OrganakiApiWeb.ConnCase
 
   import OrganakiApi.ProducersFixtures
+  import OrganakiApi.TagsFixtures
 
   alias OrganakiApi.Accounts.{Guardian, User}
 
@@ -66,7 +67,24 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
       conn = get(conn, ~p"/api/producers/#{id}")
 
       assert %{
-               "id" => ^id
+               "id" => ^id,
+               "tags" => []
+             } = json_response(conn, 200)["producer"]
+    end
+
+    test "can associate tags", %{conn: conn} do
+      tag_name = tag_fixture().name
+
+      create_attrs = Map.put(@create_attrs, :tags, [tag_name])
+
+      conn = post(conn, ~p"/api/producers", producer: create_attrs)
+      assert %{"id" => id} = json_response(conn, 201)["producer"]
+
+      conn = get(conn, ~p"/api/producers/#{id}")
+
+      assert %{
+               "id" => ^id,
+               "tags" => [^tag_name]
              } = json_response(conn, 200)["producer"]
     end
 
@@ -75,9 +93,7 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
 
       assert json_response(conn, 422)["errors"] == %{
                "lat" => ["is invalid"],
-               "name" => ["can't be blank"],
-               "password" => ["can't be blank"],
-               "address" => ["can't be blank"]
+               "name" => ["can't be blank"]
              }
     end
   end
@@ -102,6 +118,26 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
              } = json_response(conn, 200)["producer"]
     end
 
+    test "can associate tags", %{conn: conn, producer: %User{id: id} = user} do
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      tag_name = tag_fixture().name
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> put(~p"/api/producers/#{id}", producer: %{tags: [tag_name]})
+
+      assert %{"id" => ^id} = json_response(conn, 200)["producer"]
+
+      conn = get(conn, ~p"/api/producers/#{id}")
+
+      assert %{
+               "id" => ^id,
+               "tags" => [^tag_name]
+             } = json_response(conn, 200)["producer"]
+    end
+
     test "renders 401 when user is unauthorized", %{conn: conn, producer: %User{id: id}} do
       # No authorization header
       conn = put(conn, ~p"/api/producers/#{id}", producer: @update_attrs)
@@ -118,8 +154,7 @@ defmodule OrganakiApiWeb.ProducerControllerTest do
         |> put(~p"/api/producers/#{id}", producer: @invalid_attrs)
 
       assert json_response(conn, 422)["errors"] == %{
-               "lat" => ["is invalid"],
-               "password" => ["can't be blank"]
+               "lat" => ["is invalid"]
              }
     end
   end

@@ -22,10 +22,14 @@ defmodule OrganakiApi.TagsFixtures do
   Generate a user_tag.
   """
   def user_tag_fixture(attrs \\ %{}) do
+    user = OrganakiApi.AccountsFixtures.user_fixture()
+    tag = tag_fixture()
+
     {:ok, user_tag} =
       attrs
       |> Enum.into(%{
-
+        user_id: user.id,
+        tag_id: tag.id
       })
       |> OrganakiApi.Tags.create_user_tag()
 
