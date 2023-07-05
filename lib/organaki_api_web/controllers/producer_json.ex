@@ -38,6 +38,8 @@ defmodule OrganakiApiWeb.ProducerJSON do
       advertisement: producer.advertisement,
       organic_seal: producer.organic_seal,
       seal_number: producer.seal_number,
+      lat: producer.lat,
+      lng: producer.lng,
       tags: for(tag <- producer.tags, do: tag.name)
     }
   end
