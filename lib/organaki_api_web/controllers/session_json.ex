@@ -3,6 +3,12 @@ defmodule OrganakiApiWeb.SessionJSON do
 
   @doc """
   Renders a user and token.
+
+  NOTE: This is unused to make front-end development easier
+  due to the deadline we have.
+  TODO: Make this return similarly to
+  OrganakiApiWeb.ProducerJSON show with token, but not use the
+  producer terminology.
   """
   def user_token(%{user: user, token: token}) do
     %{data: data(user, token)}
